@@ -10,8 +10,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 def send_email(subject: str, message: str) -> None:
+    recipient_emails = ["ajclerc@gmail.com", "katie.hancock@hotmail.co.uk"]
     sender_email = "swimming.checker@gmail.com"
-    receiver_email = "ajclerc@gmail.com"
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
     smtp_username = "swimming.checker@gmail.com"
@@ -21,12 +21,12 @@ def send_email(subject: str, message: str) -> None:
     msg = MIMEText(message)
     msg["Subject"] = subject
     msg["From"] = sender_email
-    msg["To"] = receiver_email
+    msg["To"] = ", ".join(recipient_emails)
 
     with smtplib.SMTP(smtp_server, smtp_port) as server:
         server.starttls()
         server.login(smtp_username, smtp_password)
-        server.sendmail(sender_email, receiver_email, msg.as_string())
+        server.sendmail(sender_email, recipient_emails, msg.as_string())
 
 
 def check_course_availability() -> None:
@@ -43,11 +43,14 @@ def check_course_availability() -> None:
         expected_conditions.presence_of_all_elements_located((By.CLASS_NAME, "my-4")),
     )
     element_found = False
+    target_title = "Swim Well - Stage 1"
+    target_time = "Saturday 08:30 - 09:00"
     for element in elements:
         try:
             title_element = element.find_element(By.CSS_SELECTOR, "p.text-primary.fs-21.font-weight-bold")
             time_element = element.find_element(By.CLASS_NAME, "font-weight-bold.m-0")
-            if title_element.text == "Swim Well - Stage 1" and time_element.text == "Saturday 08:31 - 09:00":
+            # if title_element.text == "Swim Well - Stage 1" and time_element.text == "Saturday 08:30 - 09:00":
+            if title_element.text == target_title and time_element.text == target_time:
                 print("Found matching element:")
                 print("Title:", title_element.text)
                 print("Time:", time_element.text)
@@ -59,9 +62,15 @@ def check_course_availability() -> None:
             continue
     if not element_found:
         print("WARNING: did not find the class")
-        send_email("Course Not Found", "The specified course was not found on the webpage.")
+        send_email(
+            "Course Not Found",
+            f"Uh oh! The course was not found on the webpage: {target_title} {target_time}\n\n{url}",
+        )
     elif places_left_element.text != "0 out of 10":
-        send_email("Spaces Available", "There are available spaces in the swimming course.")
+        send_email(
+            f"Yay! Space available {target_title} {target_time}",
+            f"{places_left_element.text} for {target_title} {target_time}\n\n{url}",
+        )
 
 
 if __name__ == "__main__":
