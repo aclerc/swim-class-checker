@@ -1,0 +1,56 @@
+[tool.poetry]
+name = "swim-class-checker"
+version = "0.1.0"
+description = ""
+authors = ["Alex Clerc <alex.clerc@res-group.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+selenium = "^4.17.2"
+python-dotenv = "^1.0.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.10.1"
+ruff = "^0.1.3"
+mypy = "^1.6.1"
+poethepoet = "^0.24.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+select = [ # see https://beta.ruff.rs/docs/rules/
+  "ALL"
+]
+ignore = ["D","T20","PGH004"]
+
+[tool.mypy]
+python_version = 3.11
+
+[tool.coverage.report]
+exclude_lines = ["if __name__ == .__main__.:"]
+
+[tool.poe.tasks]
+[tool.poe.tasks.lint]
+help = "Runs formater and linter"
+sequence = [
+    { shell = "poetry run black ." },
+    { shell = "poetry run ruff check . --fix" },
+    { shell = "poetry run mypy ." }
+]
+
+[tool.poe.tasks.lint-check]
+help = "Checks formatter and linter"
+sequence = [
+    { shell = "poetry run black . --check" },
+    { shell = "poetry run ruff check ." },
+    { shell = "poetry run mypy ." }
+]
