@@ -10,12 +10,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 def send_email(subject: str, message: str) -> None:
-    recipient_emails = ["ajclerc@gmail.com", "katie.hancock@hotmail.co.uk"]
-    sender_email = "swimming.checker@gmail.com"
     smtp_server = "smtp.gmail.com"
     smtp_port = 587
-    smtp_username = "swimming.checker@gmail.com"
     secrets = dotenv_values(".env")
+    recipient_emails = str(secrets["RECIPIENT_EMAILS"]).split(",")
+    sender_email = str(secrets["SENDER_EMAIL"])
+    smtp_username = str(secrets["SMTP_USERNAME"])
     smtp_password = str(secrets["SMTP_PASSWORD"])
 
     msg = MIMEText(message)
