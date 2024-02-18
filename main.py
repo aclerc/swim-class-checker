@@ -1,55 +1,19 @@
-import smtplib
-from email.mime.text import MIMEText
-
-from dotenv import dotenv_values
-from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions
-from selenium.webdriver.support.wait import WebDriverWait
 
-
-def send_email(subject: str, message: str) -> None:
-    smtp_server = "smtp.gmail.com"
-    smtp_port = 587
-    secrets = dotenv_values(".env")
-    recipient_emails = str(secrets["RECIPIENT_EMAILS"]).split(",")
-    sender_email = str(secrets["SENDER_EMAIL"])
-    smtp_username = str(secrets["SMTP_USERNAME"])
-    smtp_password = str(secrets["SMTP_PASSWORD"])
-
-    msg = MIMEText(message)
-    msg["Subject"] = subject
-    msg["From"] = sender_email
-    msg["To"] = ", ".join(recipient_emails)
-
-    with smtplib.SMTP(smtp_server, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_username, smtp_password)
-        server.sendmail(sender_email, recipient_emails, msg.as_string())
+from class_check_funcs import get_elements, get_search_conditions, get_url
+from email_funcs import send_email
 
 
 def check_course_availability() -> None:
-    url = (
-        r"https://traffordleisure.courseprogress.co.uk/onlinejoining/classes-results?filter=%7B%22centre%22:5,"
-        r"%22courseGroupCategory%22:%5B1%5D,%22showFullCourses%22:true,%22dayOfWeek%22:%5B6%5D%7D"
-    )
-    options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    driver = webdriver.Chrome(options=options)
-    driver.get(url)
-
-    elements = WebDriverWait(driver, 10).until(
-        expected_conditions.presence_of_all_elements_located((By.CLASS_NAME, "my-4")),
-    )
+    url = get_url()
+    elements = get_elements(url)
     element_found = False
-    target_title = "Swim Well - Stage 1"
-    target_time = "Saturday 08:30 - 09:00"
+    target_title, target_time = get_search_conditions()
     for element in elements:
         try:
             title_element = element.find_element(By.CSS_SELECTOR, "p.text-primary.fs-21.font-weight-bold")
             time_element = element.find_element(By.CLASS_NAME, "font-weight-bold.m-0")
-            # if title_element.text == "Swim Well - Stage 1" and time_element.text == "Saturday 08:30 - 09:00":
             if title_element.text == target_title and time_element.text == target_time:
                 print("Found matching element:")
                 print("Title:", title_element.text)
