@@ -1,14 +1,12 @@
 import platform
 
 
-def check_platform():
+def check_platform() -> str:
     system = platform.system()
     if system == "Windows":
         return "Windows"
-    elif system == "Linux":
+    if system == "Linux":
         if "arm" in platform.machine().lower() or platform.machine().lower() == "aarch64":
             return "Raspberry Pi"
-        else:
-            return "Linux (non-Raspberry Pi)"
-    else:
-        return "Unknown"
+        return "Linux (non-Raspberry Pi)"
+    return "Unknown"

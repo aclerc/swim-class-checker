@@ -6,7 +6,7 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from class_check_funcs import get_elements, get_search_conditions, get_url
-from email_funcs import send_email
+from email_funcs import get_secrets_dict, send_email
 
 
 def daily_subject() -> str:
@@ -83,6 +83,10 @@ def send_daily_summary_email() -> None:
         msg += "if you are getting this email it means I will (probably) be checking these classes for you today:\n\n"
         for title, time, places in zip(matching_titles, matching_times, matching_places_left, strict=False):
             msg += f"title: {title}\ntime: {time}\nplaces left: {places}\n\n"
+
+    msg += "when I find more than 0 places I will send an email to:\n"
+    secrets_dict = get_secrets_dict()
+    msg += str(secrets_dict["CHECK_EMAIL_RECIPIENTS"]).replace(",", "\n")
     r = secrets.randbelow(3)
     if r == 1:
         pseudonym = "Isaac's favourite uncle"
@@ -95,4 +99,5 @@ def send_daily_summary_email() -> None:
 
 
 if __name__ == "__main__":
+    print(f"running {__file__}...")
     send_daily_summary_email()

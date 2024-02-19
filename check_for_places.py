@@ -28,7 +28,8 @@ def check_for_course_places() -> None:
     if not matching_titles:
         send_email(
             "No courses found",
-            f"Uh oh! No courses found: target_title={target_title} target_times={','.join(target_times)}\n\nurl=\n{url}",
+            f"Uh oh! No courses found: target_title={target_title} "
+            f"target_times={','.join(target_times)}\n\nurl=\n{url}",
             "ADMIN_RECIPIENTS",
         )
     else:
@@ -45,4 +46,5 @@ def check_for_course_places() -> None:
 
 
 if __name__ == "__main__":
+    print(f"running {__file__}...")
     check_for_course_places()

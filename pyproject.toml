@@ -11,7 +11,6 @@ selenium = "^4.17.2"
 python-dotenv = "^1.0.1"
 pytz = "^2024.1"
 types-pytz = "^2024.1.0.20240203"
-webdriver-manager = "^4.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.10.1"
