@@ -1,5 +1,6 @@
 import datetime
 import secrets
+import time
 
 import pytz
 from selenium.common import NoSuchElementException
@@ -52,6 +53,7 @@ def check_for_course_places() -> None:
 
 
 if __name__ == "__main__":
+    time.sleep(secrets.randbelow(120))
     print(f"\n\n{datetime.datetime.now(pytz.timezone('Europe/London'))}")
     print(f"running {__file__}...")
     check_for_course_places()
