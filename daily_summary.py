@@ -99,5 +99,6 @@ def send_daily_summary_email() -> None:
 
 
 if __name__ == "__main__":
+    print(f"\n\n{datetime.datetime.now(pytz.timezone('Europe/London'))}")
     print(f"running {__file__}...")
     send_daily_summary_email()

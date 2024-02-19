@@ -1,3 +1,7 @@
+import datetime
+import secrets
+
+import pytz
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
@@ -33,18 +37,21 @@ def check_for_course_places() -> None:
             "ADMIN_RECIPIENTS",
         )
     else:
-        msg = f"{len(matching_places_left)} matches found"
-        send_email("debug", msg, "ADMIN_RECIPIENTS")
+        msg = f"{len(matching_places_left)} matches found\n"
         for i, places_left in enumerate(matching_places_left):
             print(f"{places_left} for {matching_titles[i]} {matching_times[i]}")
+            msg += f"{places_left} for {matching_titles[i]} {matching_times[i]}\n"
             if int(places_left.split(" ")[0]) > 0:
                 send_email(
                     f"Yay! place available for {matching_titles[i]} {matching_times[i]}",
                     f"{places_left} for {matching_titles[i]} {matching_times[i]}\n\n{url}",
                     "CHECK_EMAIL_RECIPIENTS",
                 )
+        if secrets.randbelow(100) == 1:  # PLR2004
+            send_email("occasional check_for_places", msg, "ADMIN_RECIPIENTS")
 
 
 if __name__ == "__main__":
+    print(f"\n\n{datetime.datetime.now(pytz.timezone('Europe/London'))}")
     print(f"running {__file__}...")
     check_for_course_places()

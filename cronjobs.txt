@@ -1,3 +1,4 @@
 55 5 * * * /bin/bash ~/swimcheck/daily_summary.sh >> ~/swimcheck/dssh_log.txt
 5,25,45 * * * * /bin/bash ~/swimcheck/check_for_places.sh >> ~/swimcheck/cfp_log.txt
+0 0 * * 0 rm ~/swimcheck/dssh_log.txt
 0 0 * * 0 rm ~/swimcheck/cfp_log.txt
