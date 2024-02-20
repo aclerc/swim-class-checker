@@ -26,8 +26,10 @@ def send_email(subject: str, message: str, recipient_type: str = "RECIPIENT_EMAI
     if recipient_type != "ADMIN_RECIPIENTS":
         bcc_emails = str(secrets_dict["ADMIN_RECIPIENTS"]).split(",")
         msg["Bcc"] = ", ".join(bcc_emails)
+    else:
+        bcc_emails = []
 
     with smtplib.SMTP(smtp_server, smtp_port) as server:
         server.starttls()
         server.login(smtp_username, smtp_password)
-        server.sendmail(sender_email, recipient_emails, msg.as_string())
+        server.sendmail(sender_email, recipient_emails + bcc_emails, msg.as_string())
